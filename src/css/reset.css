@@ -25,10 +25,53 @@ a {
 
 button {
   cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  padding: 7px 12px;
+  color: aliceblue;
+  background: #4e75ff;
+  transition: border-color 0.3s ease;
+}
+
+button:hover{
+  background-color: #6C8CFF;
+}
+
+.js-load-btn{
+  margin-left: 50%;
+  margin-bottom: 20px;
 }
 
 img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+input {
+  width: auto;
+  height: 25px;
+  border-radius: 4px;
+  border: 1px solid #808080;
+  padding-left: 8px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4E75FF;
+}
+
+input:hover{
+  border-color: black;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
