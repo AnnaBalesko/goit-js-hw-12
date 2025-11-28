@@ -2,6 +2,7 @@
 
 import { getImagesByQuery } from './js/pixabay-api.js';
 import {
+  loadBtn,
   createGallery,
   clearGallery,
   hideLoader,
@@ -15,6 +16,10 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const form = document.querySelector('.form');
 const input = form.elements['search-text'];
+
+let currentQuery = '';
+let currentPage = 1;
+let totalPage = 1;
 
 hideLoadMoreButton();
 hideLoader();
@@ -33,13 +38,30 @@ form.addEventListener('submit', async e => {
     return;
   }
 
+  currentQuery = query;
+  currentPage = 1;
+
   showLoader();
   hideLoadMoreButton();
   clearGallery();
 
+  await fetchImg();
+});
+
+loadBtn.addEventListener('click', async () => {
+  currentPage++;
+  await fetchImg();
+});
+
+async function fetchImg() {
   try {
-    const data = await getImagesByQuery(query);
+    showLoader();
+
+    const data = await getImagesByQuery(currentQuery, currentPage);
+    totalPage = data.totalPage;
+
     showMoreButton();
+
     if (data.hits.length === 0) {
       iziToast.error({
         title: 'No results',
@@ -51,8 +73,26 @@ form.addEventListener('submit', async e => {
       form.reset();
       return;
     }
+
     createGallery(data.hits);
+
     input.value = '';
+
+    const totalLoaded = document.querySelectorAll('.gallery-item').length;
+
+    if (totalLoaded >= totalPage) {
+      hideLoadMoreButton();
+      iziToast.info({
+        title: 'The End',
+        message: 'We`re sorry, but you`ve reached the end of search results.',
+      });
+    } else {
+      showMoreButton();
+    }
+
+    if (currentPage > 1) {
+      scrollPage();
+    }
   } catch (error) {
     {
       iziToast.error({
@@ -64,6 +104,18 @@ form.addEventListener('submit', async e => {
       form.reset();
       console.error(error);
     }
+  } finally {
+    hideLoader();
   }
-  hideLoader();
-});
+}
+
+function scrollPage() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery-item')
+    .getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}

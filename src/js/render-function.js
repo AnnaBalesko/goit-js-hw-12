@@ -11,6 +11,7 @@ export let galleryItem = new SimpleLightbox('.gallery a', {
 });
 
 const gallery = document.querySelector('.gallery');
+export const loadBtn = document.querySelector('.js-load-btn');
 
 function imgTemplate(img) {
   return `<li class='gallery-item'>
@@ -28,7 +29,6 @@ export function createGallery(images) {
   gallery.insertAdjacentHTML('beforeend', markup);
 
   galleryItem.refresh();
-  return markup;
 }
 
 export function clearGallery() {
@@ -50,14 +50,12 @@ export function hideLoader() {
 }
 
 export function showMoreButton() {
-  const loadBtn = document.querySelector('.js-load-btn');
   if (loadBtn) {
     loadBtn.classList.remove('hidden');
   }
 }
 
 export function hideLoadMoreButton() {
-  const loadBtn = document.querySelector('.js-load-btn');
   if (loadBtn) {
     loadBtn.classList.add('hidden');
   }
