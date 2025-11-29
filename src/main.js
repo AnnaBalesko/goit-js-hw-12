@@ -9,7 +9,7 @@ import {
   showLoader,
   hideLoadMoreButton,
   showMoreButton,
-} from './js/render-function.js';
+} from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import 'simplelightbox/dist/simple-lightbox.min.css';
