@@ -16,7 +16,7 @@ export const loadBtn = document.querySelector('.js-load-btn');
 function imgTemplate(img) {
   return `<li class='gallery-item'>
     <a class='gallery-link' href=${img.largeImageURL}>
-    <img class='gallery-image' src='${img.webformatURL}' alt='${img.tags}'/>
+    <img loading='lazy' class='gallery-image' src='${img.webformatURL}' alt='${img.tags}'/>
     <div class='img'>
     <p><strong>Likes</strong> ${img.likes}</p>
     <p><strong>Views</strong> ${img.views}</p>
@@ -49,7 +49,7 @@ export function hideLoader() {
   }
 }
 
-export function showMoreButton() {
+export function showLoadMoreButton() {
   if (loadBtn) {
     loadBtn.classList.remove('hidden');
   }

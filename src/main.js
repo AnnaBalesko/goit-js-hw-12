@@ -8,7 +8,7 @@ import {
   hideLoader,
   showLoader,
   hideLoadMoreButton,
-  showMoreButton,
+  showLoadMoreButton,
 } from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
@@ -17,29 +17,28 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const form = document.querySelector('.form');
 const input = form.elements['search-text'];
 
-let currentQuery = '';
-let currentPage = 1;
-let totalPage = 1;
+const PAGE_SIZE = 15;
+let query;
+let currentPage;
+let totalHits;
 
 hideLoadMoreButton();
 hideLoader();
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
-  const query = e.target.elements['search-text'].value.trim();
 
-  if (query.length === 0) return;
+  const formData = new FormData(e.target);
+  query = formData.get('search-text').trim();
+  currentPage = 1;
 
-  if (!query) {
+  if (!query || query.length === 0) {
     iziToast.warning({
       title: 'Warning',
       message: 'Please enter a search term!',
     });
     return;
   }
-
-  currentQuery = query;
-  currentPage = 1;
 
   showLoader();
   hideLoadMoreButton();
@@ -49,7 +48,7 @@ form.addEventListener('submit', async e => {
 });
 
 loadBtn.addEventListener('click', async () => {
-  currentPage++;
+  currentPage += 1;
   await fetchImg();
 });
 
@@ -57,12 +56,10 @@ async function fetchImg() {
   try {
     showLoader();
 
-    const data = await getImagesByQuery(currentQuery, currentPage);
-    totalPage = data.totalPage;
+    const res = await getImagesByQuery(query, currentPage);
+    totalHits = Math.ceil(res.total / PAGE_SIZE);
 
-    showMoreButton();
-
-    if (data.hits.length === 0) {
+    if (res.hits.length === 0) {
       iziToast.error({
         title: 'No results',
         message:
@@ -74,25 +71,11 @@ async function fetchImg() {
       return;
     }
 
-    createGallery(data.hits);
+    createGallery(res.hits);
 
     input.value = '';
 
-    const totalLoaded = document.querySelectorAll('.gallery-item').length;
-
-    if (totalLoaded >= totalPage) {
-      hideLoadMoreButton();
-      iziToast.info({
-        title: 'The End',
-        message: 'We`re sorry, but you`ve reached the end of search results.',
-      });
-    } else {
-      showMoreButton();
-    }
-
-    if (currentPage > 1) {
-      scrollPage();
-    }
+    checkBtnStatus();
   } catch (error) {
     {
       iziToast.error({
@@ -106,6 +89,19 @@ async function fetchImg() {
     }
   } finally {
     hideLoader();
+  }
+}
+
+function checkBtnStatus() {
+  if (currentPage < totalHits) {
+    showLoadMoreButton();
+    scrollPage();
+  } else {
+    hideLoadMoreButton();
+    iziToast.info({
+      title: 'The End',
+      message: 'We`re sorry, but you`ve reached the end of search results.',
+    });
   }
 }
 
