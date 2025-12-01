@@ -1,9 +1,29 @@
 'use strict';
 
+import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const gallery = document.querySelector('.gallery');
 export const loadBtn = document.querySelector('.js-load-btn');
+
+let lightbox = null;
+
+export function initLightbox() {
+  if (lightbox) return;
+
+  lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+    close: true,
+    docClose: false,
+  });
+}
+
+export function updateLightbox() {
+  if (lightbox) {
+    lightbox.refresh();
+  }
+}
 
 function imgTemplate(img) {
   return `<li class='gallery-item'>
@@ -19,6 +39,7 @@ function imgTemplate(img) {
 export function createGallery(images) {
   const markup = images.map(imgTemplate).join('');
   gallery.insertAdjacentHTML('beforeend', markup);
+  updateLightbox();
 }
 
 export function clearGallery() {
@@ -28,25 +49,25 @@ export function clearGallery() {
 export function showLoader() {
   const loaderOverlay = document.getElementById('loader-overlay');
   if (loaderOverlay) {
-    loaderOverlay.classList.remove('hidden');
+    loaderOverlay?.classList.remove('hidden');
   }
 }
 
 export function hideLoader() {
   const loaderOverlay = document.getElementById('loader-overlay');
   if (loaderOverlay) {
-    loaderOverlay.classList.add('hidden');
+    loaderOverlay?.classList.add('hidden');
   }
 }
 
 export function showLoadMoreButton() {
   if (loadBtn) {
-    loadBtn.classList.remove('hidden');
+    loadBtn?.classList.remove('hidden');
   }
 }
 
 export function hideLoadMoreButton() {
   if (loadBtn) {
-    loadBtn.classList.add('hidden');
+    loadBtn?.classList.add('hidden');
   }
 }

@@ -2,14 +2,11 @@
 
 import axios from 'axios';
 
-const BASE_URL = 'https://pixabay.com';
-const END_POINTS = '/api/';
+const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '53336215-c76f1a14c7207891fbb20a22b';
 
-export async function getImagesByQuery(query, currentPage) {
-  const url = `${BASE_URL}${END_POINTS}`;
-
-  const response = await axios.get(url, {
+export async function getImagesByQuery(query, page = 1) {
+  const response = await axios.get(BASE_URL, {
     params: {
       key: API_KEY,
       q: query,
@@ -17,7 +14,7 @@ export async function getImagesByQuery(query, currentPage) {
       orientation: 'horizontal',
       safesearch: 'true',
       per_page: 15,
-      page: currentPage,
+      page: page,
     },
   });
   return response.data;
