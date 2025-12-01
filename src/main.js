@@ -54,8 +54,9 @@ form.addEventListener('submit', async e => {
 
 loadBtn.addEventListener('click', async () => {
   currentPage += 1;
-  scrollPage();
+  
   await fetchImg();
+  scrollPage();
 });
 
 async function fetchImg() {
