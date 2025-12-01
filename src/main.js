@@ -14,12 +14,12 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 
- let lightbox = new SimpleLightbox('.gallery a', {
-   captionsData: 'alt',
-   captionDelay: 250,
-   close: true,
-   docClose: false,
- });
+let lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+  close: true,
+  docClose: false,
+});
 
 const form = document.querySelector('.form');
 
@@ -54,9 +54,8 @@ form.addEventListener('submit', async e => {
 
 loadBtn.addEventListener('click', async () => {
   currentPage += 1;
-  
+
   await fetchImg();
-  scrollPage();
 });
 
 async function fetchImg() {
@@ -65,7 +64,7 @@ async function fetchImg() {
 
     const res = await getImagesByQuery(query, currentPage);
     totalHits = Math.ceil(res.total / PAGE_SIZE);
-      checkBtnStatus();
+    checkBtnStatus();
 
     if (res.hits.length === 0) {
       iziToast.error({
@@ -73,6 +72,7 @@ async function fetchImg() {
         message:
           'Sorry, there are no images matching your search query. Please try again!',
       });
+
       hideLoadMoreButton();
       hideLoader();
       form.reset();
@@ -80,8 +80,10 @@ async function fetchImg() {
     }
 
     createGallery(res.hits);
+    if (currentPage > 1) {
+      scrollPage();
+    }
     lightbox.refresh();
-
   } catch (error) {
     {
       iziToast.error({
