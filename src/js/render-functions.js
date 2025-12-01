@@ -1,14 +1,6 @@
 'use strict';
 
-import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
-export let galleryItem = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-  close: true,
-  docClose: false,
-});
 
 const gallery = document.querySelector('.gallery');
 export const loadBtn = document.querySelector('.js-load-btn');
@@ -27,8 +19,6 @@ function imgTemplate(img) {
 export function createGallery(images) {
   const markup = images.map(imgTemplate).join('');
   gallery.insertAdjacentHTML('beforeend', markup);
-
-  galleryItem.refresh();
 }
 
 export function clearGallery() {

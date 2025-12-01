@@ -12,10 +12,16 @@ import {
 } from './js/render-functions.js';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
+
+ let lightbox = new SimpleLightbox('.gallery a', {
+   captionsData: 'alt',
+   captionDelay: 250,
+   close: true,
+   docClose: false,
+ });
 
 const form = document.querySelector('.form');
-const input = form.elements['search-text'];
 
 const PAGE_SIZE = 15;
 let query;
@@ -40,7 +46,6 @@ form.addEventListener('submit', async e => {
     return;
   }
 
-  showLoader();
   hideLoadMoreButton();
   clearGallery();
 
@@ -49,6 +54,7 @@ form.addEventListener('submit', async e => {
 
 loadBtn.addEventListener('click', async () => {
   currentPage += 1;
+  scrollPage();
   await fetchImg();
 });
 
@@ -58,6 +64,7 @@ async function fetchImg() {
 
     const res = await getImagesByQuery(query, currentPage);
     totalHits = Math.ceil(res.total / PAGE_SIZE);
+      checkBtnStatus();
 
     if (res.hits.length === 0) {
       iziToast.error({
@@ -72,10 +79,8 @@ async function fetchImg() {
     }
 
     createGallery(res.hits);
+    lightbox.refresh();
 
-    input.value = '';
-
-    checkBtnStatus();
   } catch (error) {
     {
       iziToast.error({
@@ -95,7 +100,6 @@ async function fetchImg() {
 function checkBtnStatus() {
   if (currentPage < totalHits) {
     showLoadMoreButton();
-    scrollPage();
   } else {
     hideLoadMoreButton();
     iziToast.info({
